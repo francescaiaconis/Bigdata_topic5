@@ -6,7 +6,6 @@ from pyspark.ml.feature import StringIndexer, OneHotEncoder, VectorAssembler, Mi
 from pyspark.ml import Pipeline
 
 
-# Avvia la sessione Spark
 spark = SparkSession.builder.appName("TrafficData").getOrCreate()
 
 file_path = 'file:///C:/Users/fraia/Desktop/prog_bigdata/code/data/dataset_notnull.csv'
@@ -17,7 +16,7 @@ numeric_columns = ['request_body_len', 'trans_depth', 'response_body_len', 'host
 categorical_columns = ['dest_port', 'method', 'version', 'status_code', 'response_content_type', 'request_content_type']
 df = df.select(numeric_columns + categorical_columns + ['target'])
 
-# Riduci il numero di valori diversi per ogni colonna categorica
+# Riduce il numero di valori diversi per ogni colonna categorica
 def reduce_categories(df, categorical_columns, top_n=10):
     for col_name in categorical_columns:
         top_categories = [row[col_name] for row in df.groupBy(col_name).count().orderBy('count', ascending=False).limit(top_n).select(col_name).collect()]

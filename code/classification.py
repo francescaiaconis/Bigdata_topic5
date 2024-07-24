@@ -10,8 +10,8 @@ import matplotlib.pyplot as plt
 
 df = pd.read_parquet('data/traffic_data_transformed.parquet')
 
-X = df.drop('target', axis=1)  # Sostituisci 'target' con la tua colonna di etichetta
-y = df['target']  # Sostituisci 'target' con la tua colonna di etichetta
+X = df.drop('target', axis=1)  
+y = df['target'] 
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
