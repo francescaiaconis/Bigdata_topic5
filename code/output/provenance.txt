@@ -1,0 +1,107 @@
+PS C:\Users\fraia\Desktop\prog_bigdata\code> python .\missing_values.py
+C:\Users\fraia\Desktop\prog_bigdata\code\missing_values.py:45: DtypeWarning: Columns (9,11,17,23,24,25,26,27,28,29,30,32,33,34,35,36) have mixed types. Specify dtype option on import or set low_memory=False.
+  df = pd.read_csv('data/dataset_etichettato.csv')
+2024-07-24 17:31:08 - WARNING - Enabled saving provenance to Neo4j!
+2024-07-24 17:31:08 - DEBUG -
+                MATCH (n)
+                CALL { WITH n
+                DETACH DELETE n
+                } IN TRANSACTIONS OF 1000 ROWS;
+
+2024-07-24 17:31:09 - INFO -  Invoking __setitem__ function
+2024-07-24 17:31:09 - INFO -  The function __setitem__ was called by modify_host_column_ridotta function.
+2024-07-24 17:31:09 - INFO - get_prov_feature_rename function took 0:00:00
+2024-07-24 17:31:09 - INFO -  Dropped cols: Index([], dtype='object')
+2024-07-24 17:31:09 - INFO -  Dropped rows: RangeIndex(start=0, stop=0, step=1)
+2024-07-24 17:31:09 - INFO -  Generated rows: RangeIndex(start=0, stop=0, step=1)
+2024-07-24 17:31:09 - INFO -  Generated cols: Index([], dtype='object')
+{'request_body_len': 'request_body_len', 'trans_depth': 'trans_depth', 'response_body_len': 'response_body_len'}
+2024-07-24 17:31:09 - INFO - get_prov_space_transformation function took 0:00:00.002000
+2024-07-24 17:31:09 - INFO -  Check for value change...
+2024-07-24 17:31:09 - INFO -  Value transformation detect on {'host'} columns
+2024-07-24 17:31:09 - INFO - get_prov_value_change function took 0:00:00.003089
+2024-07-24 17:31:09 - INFO - 
+╒═══════════════════════╤═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╕
+│ Activity #1           │                                                                                                                       │
+╞═══════════════════════╪═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╡
+│ id                    │ activity:7b21898f-6d51-4907-b22e-80016cfadab5                                                                         │
+├───────────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ function_name         │ Value Transformation                                                                                                  │
+├───────────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ used_features         │ ['host']                                                                                                              │
+├───────────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ description           │ __setitem__                                                                                                           │
+├───────────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ generated_features    │                                                                                                                       │
+├───────────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ generated_records     │                                                                                                                       │
+├───────────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ deleted_used_features │                                                                                                                       │
+├───────────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ deleted_records       │                                                                                                                       │
+├───────────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ code                  │ dataset[0]['host'] =dataset[0]['host'].apply(lambda x: np.nan if pd.isna(x) else (1 if is_ip_address(str(x)) else 0)) │
+├───────────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ code_line             │ 19                                                                                                                    │
+├───────────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ tracker_id            │ tracker:5127ae43-1329-4989-b458-77e77f445925                                                                          │
+├───────────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ operation_number      │ 1                                                                                                                     │
+╘═══════════════════════╧═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╛
+2024-07-24 17:31:10 - DEBUG - 
+                UNWIND $rows AS row
+                CREATE (a:Activity)
+                SET a = row
+
+2024-07-24 17:31:10 - DEBUG - 
+                UNWIND $rows AS row
+                CREATE (e:Entity)
+                SET e=row
+
+2024-07-24 17:31:10 - DEBUG - 
+                UNWIND $rows AS row
+                MATCH (e1:Entity {id: row.gen})
+                WITH e1, row
+                MATCH (e2:Entity {id: row.used})
+                MERGE (e1)-[:WAS_DERIVED_FROM]->(e2)
+
+2024-07-24 17:31:11 - DEBUG - 
+                    UNWIND $rows AS row
+                    MATCH (e:Entity {id: row})
+                    WITH e
+                    MATCH (a:Activity {id: $act_id})
+                    MERGE (a)-[:USED]->(e)
+
+2024-07-24 17:31:11 - DEBUG -
+                    UNWIND $rows AS row
+                    MATCH (e:Entity {id: row})
+                    WITH e
+                    MATCH (a:Activity {id: $act_id})
+                    MERGE (e)-[:WAS_GENERATED_BY]->(a)
+
+2024-07-24 17:31:11 - DEBUG -
+
+2024-07-24 17:31:11 - DEBUG -
+                    UNWIND $rows AS row
+                    MATCH (e:Entity {id: row})
+                    WITH e
+                    MATCH (a:Activity {id: $act_id})
+                    MERGE (e)-[:WAS_GENERATED_BY]->(a)
+
+2024-07-24 17:31:11 - DEBUG -
+                    WITH e
+                    MATCH (a:Activity {id: $act_id})
+                    MERGE (e)-[:WAS_GENERATED_BY]->(a)
+
+2024-07-24 17:31:11 - DEBUG -
+                    MERGE (e)-[:WAS_GENERATED_BY]->(a)
+
+2024-07-24 17:31:11 - DEBUG -
+
+2024-07-24 17:31:11 - DEBUG -
+2024-07-24 17:31:11 - DEBUG -
+                    UNWIND $rows AS row
+                    MATCH (e:Entity {id: row})
+                    WITH e
+                    MATCH (a:Activity {id: $act_id})
+                    MERGE (e)-[:WAS_INVALIDATED_BY]->(a)
