@@ -44,3 +44,13 @@ plt.xlabel('Predicted')
 plt.ylabel('True')
 plt.savefig('confusion_matrix.png')  # Salva l'immagine
 plt.show()
+
+# Filtra i record classificati come 2
+classified_as_2_indices = np.where(y_pred == 2)[0]
+X_test_classified_as_2 = X_test.iloc[classified_as_2_indices]
+y_test_classified_as_2 = y_test.iloc[classified_as_2_indices]
+
+# Creazione di un nuovo dataset
+new_df = pd.concat([X_test_classified_as_2, y_test_classified_as_2], axis=1)
+new_df = new_df.drop('target', axis=1)
+new_df.to_csv('data/classified_as_2.csv', index=False)
